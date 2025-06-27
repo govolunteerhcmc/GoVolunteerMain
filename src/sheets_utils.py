@@ -30,12 +30,14 @@ def _search_one_sheet(sheet_api, spreadsheet_id: str, full_name: str, citizen_id
             return None
 
         headers = values[0]
+        name_index = headers.index('User_Name')
         cccd_index = headers.index('CCCD')
 
         for row in values[1:]:
-            if len(row) > max(cccd_index):
+            if len(row) > max(name_index, cccd_index):
                 if (
-                    row[cccd_index].strip() == citizen_id.strip()
+                    row[name_index].strip().lower() == full_name.strip().lower()
+                    and row[cccd_index].strip() == citizen_id.strip()
                 ):
                     return {headers[i]: (row[i] if i < len(row) else '') for i in range(len(headers))}
 
@@ -70,6 +72,7 @@ def update_pdf_requested(full_name: str, citizen_id: str, email: str):
 
     headers = values[0]
     try:
+        name_index = headers.index('User_Name')
         cccd_index = headers.index('CCCD')
         email_index = headers.index('Email')
 
@@ -78,9 +81,10 @@ def update_pdf_requested(full_name: str, citizen_id: str, email: str):
         raise Exception("Thiếu cột cần thiết trong sheet.")
 
     for i, row in enumerate(values[1:], start=2):
-        if len(row) > max (cccd_index):
+        if len(row) > max(name_index, cccd_index):
             if (
-                row[cccd_index].strip() == citizen_id.strip()
+                row[name_index].strip().lower() == full_name.strip().lower()
+                and row[cccd_index].strip() == citizen_id.strip()
             ):
                 # Ghi email nếu khác
                 email_cell = f"{SHEET_NAME}!{chr(65 + email_index)}{i}"
