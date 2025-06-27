@@ -1,0 +1,24 @@
+# File: .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environment
+.env
+venv/
+env/
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# File nhạy cảm
+credentials.json
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
